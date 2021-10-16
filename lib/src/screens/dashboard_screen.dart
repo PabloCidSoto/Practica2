@@ -91,6 +91,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Navigator.pushNamed(context, '/movie');
               },
             ),
+            ListTile(
+              title: Text('Tareas'),
+              subtitle: Text('Manejo de Tareas'),
+              leading: Icon(Icons.assignment_outlined),
+              trailing: Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.pop(context);
+                Navigator.pushNamed(context, '/tareas');
+              },
+            ),
           ],
         ),
       )

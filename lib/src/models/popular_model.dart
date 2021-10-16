@@ -32,20 +32,20 @@ class PopularMoviesModel {
     String? posterPath;
     DateTime? releaseDate;
     String? title;    
-    int? voteAverage;
+    double? voteAverage;
     int? voteCount;
 
     factory PopularMoviesModel.fromJson(Map<String, dynamic> json) => PopularMoviesModel(
-        backdropPath: json["backdrop_path"],
+        backdropPath: json["backdrop_path"] ?? "",
         id: json["id"],
         originalLanguage: json["original_language"],
         originalTitle: json["original_title"],
         overview: json["overview"],
         popularity: json["popularity"].toDouble(),
-        posterPath: json["poster_path"],
+        posterPath: json["poster_path"] ?? "",
         releaseDate: DateTime.parse(json["release_date"]),
         title: json["title"],
-        voteAverage: json["vote_average"],
+        voteAverage: json["vote_average"] is int ? (json["vote_average"] as int).toDouble() : json["vote_average"],
         voteCount: json["vote_count"],
     );
 

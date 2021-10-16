@@ -1,14 +1,15 @@
 import 'dart:io';
 
 import 'package:path_provider/path_provider.dart';
-import 'package:practica2/src/models/notas_model.dart';
+import 'package:practica2/src/models/tareas_model.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
-class DatabaseHelper {
-  static final _nombreBD = "NOTASBD";
+
+class DatabaseTareas{
+  static final _nombreBD = "TAREASBD";
   static final _versionBD = 1;
-  static final _nombreTabla = "tablaNotas";
+  static final _nombreTabla = "tablaTareas";
 
   static Database? _database;
   Future<Database?> get database async {
@@ -28,7 +29,7 @@ class DatabaseHelper {
   }
 
   Future<void> _crearTabla(Database db, int version) async {
-    await db.execute("CREATE TABLE $_nombreTabla (id INTEGER PRIMARY KEY, titulo VARCHAR(50), detalle VARCHAR(100))");
+    await db.execute("CREATE TABLE $_nombreTabla (id INTEGER PRIMARY KEY, nombreTarea VARCHAR(50), descTarea TEXT, fechaEntrega DATETIME, entregada BOOLEAN)");
   }
 
   Future<int> insert(Map<String, dynamic> row) async{
@@ -45,16 +46,30 @@ class DatabaseHelper {
     var conexion = await database;
     return await conexion!.delete(_nombreTabla, where: 'id = ?', whereArgs: [id]);
   }
-  
-  Future<List<NotasModel>> getAllNotes() async {
+
+  Future<List<TareasModel>> getAllTareas() async {
     var conexion = await database;
     var result = await conexion!.query(_nombreTabla);
-    return result.map((notaMap) => NotasModel.fromJson(notaMap)).toList(); 
+    return result.map((tareaMap) => TareasModel.fromJson(tareaMap)).toList();
   }
 
-  Future<NotasModel> getNote(int id) async{
+  Future<TareasModel> getTarea(int id) async{
     var conexion = await database;
     var result = await conexion!.query(_nombreTabla,where: 'id = ?', whereArgs: [id]);
-    return NotasModel.fromJson(result.first);
+    return TareasModel.fromJson(result.first);
   }
+
+  Future<List<TareasModel>> getTareasCompletadas() async {
+    var conexion = await database;
+    var result = await conexion!.query(_nombreTabla, where: 'entregada = ?', whereArgs: [1], orderBy: 'fechaEntrega');
+    return result.map((tareaMap) => TareasModel.fromJson(tareaMap)).toList();
+  }
+
+  Future<List<TareasModel>> getTareasNoCompletadas() async {
+    var conexion = await database;
+    var result = await conexion!.query(_nombreTabla, where: 'entregada = ?', whereArgs: [0], orderBy: 'fechaEntrega');
+    return result.map((tareaMap) => TareasModel.fromJson(tareaMap)).toList();
+  }
+
+  
 }
